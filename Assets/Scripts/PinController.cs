@@ -28,7 +28,17 @@ public class PinController : MonoBehaviour
         if(collision.tag == "Rotator")
         {
             transform.SetParent(collision.transform);
+            
+            //aumenta a velocidade
+            collision.GetComponent<RotatorController>().speedRotator += 1f;
+            
+            //Inverte a direção
+            collision.GetComponent<RotatorController>().speedRotator *= -1f;
+            
             isPinned = true;
+        }else if (collision.tag == "Pin")
+        {
+            FindAnyObjectByType<GameManager>().EndGame();
         }
     }
 }
