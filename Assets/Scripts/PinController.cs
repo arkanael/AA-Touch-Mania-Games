@@ -1,44 +1,51 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PinController : MonoBehaviour
 {
-    private bool isPinned;
-    
-    public float speedPin = 20f;
+    private bool isPinned = false;
 
+    private float speed;
     public Rigidbody2D pin;
-    // Start is called before the first frame update
-    void Start()
+
+    private void Start()
     {
         pin = GetComponent<Rigidbody2D>();
+        speed = GameManager.instance.speedPin;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if(!isPinned)
-        pin.MovePosition(pin.position + Vector2.up * speedPin * Time.deltaTime);
+        if (!isPinned)
+            pin.MovePosition(pin.position + Vector2.up * speed * Time.deltaTime);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    void OnTriggerEnter2D(Collider2D collider)
     {
-        if(collision.tag == "Rotator")
+        if (collider.CompareTag("Rotator"))
         {
-            transform.SetParent(collision.transform);
+            transform.SetParent(collider.transform);
             
-            //aumenta a velocidade
-            collision.GetComponent<RotatorController>().speedRotator += 1f;
-            
-            //Inverte a direção
-            collision.GetComponent<RotatorController>().speedRotator *= -1f;
-            
+
+            if(collider.GetComponent<RotatorController>().speed > 0)
+            {
+                speed += 0.5f;
+                collider.GetComponent<RotatorController>().speed += speed * Time.deltaTime;
+                collider.GetComponent<RotatorController>().speed *= -1;
+            }
+            else
+            {
+                speed += -0.5f;
+                collider.GetComponent<RotatorController>().speed += -speed * Time.deltaTime;
+                collider.GetComponent<RotatorController>().speed *= -1;
+
+            }
+
+            ScoreController.PinCount++;
             isPinned = true;
-        }else if (collision.tag == "Pin")
+        }
+        else if (collider.CompareTag("Pin"))
         {
-            FindAnyObjectByType<GameManager>().EndGame();
+            GameManager.instance.EndGame();
         }
     }
 }

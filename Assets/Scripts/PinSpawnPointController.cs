@@ -5,14 +5,7 @@ using UnityEngine;
 public class PinSpawnPointController : MonoBehaviour
 {
     public GameObject pinPrefab;
-        
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetButtonDown("Fire1"))
@@ -21,7 +14,7 @@ public class PinSpawnPointController : MonoBehaviour
         }
     }
 
-    private void SpawnPin()
+    void SpawnPin()
     {
         Instantiate(pinPrefab, transform.position, transform.rotation);
     }
